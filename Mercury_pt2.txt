@@ -1,0 +1,33 @@
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.7.0 <0.9.0;
+
+//Create a contract impliments the password interface
+contract PasswordStore is UserMercuryPassword {
+    error PasswordStore__NotOwner();
+
+    address private s_owner;
+    string private s_password;
+
+    event SetNetPassword();
+
+    constructor() {
+        s_owner = msg.sender;
+    }
+
+    function setPassword(string memory newPassword) external override onlyOwner {
+    s_password = newPassword;
+    emit SetNetPassword();
+    }
+
+
+    function getPassword() external view onlyOwner returns (string memory) {
+        return s_password;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == s_owner, "unauthorizedAccess()");
+        _;
+    }
+}
+
+
